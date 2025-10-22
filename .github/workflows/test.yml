@@ -44,7 +44,7 @@ jobs:
       run: |
         cd auth
         npm start &
-        sleep 15
+        sleep 5
         # Test if auth service is ready
         timeout 30 bash -c 'until curl -f http://localhost:3000/dashboard 2>/dev/null; do sleep 1; done' || echo "Auth service might not be ready"
         # Create test user for product tests
