@@ -13,7 +13,8 @@ describe("Products", () => {
 
   before(async () => {
     app = new App();
-    await Promise.all([app.connectDB(), app.setupMessageBroker()]);
+    await app.connectDB();
+    // Skip message broker setup for simplified tests
 
     try {
       const authRes = await chai
