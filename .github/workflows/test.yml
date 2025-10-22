@@ -74,11 +74,27 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3.2.0
       
+    - name: Verify Docker secrets
+      run: |
+        if [ -z "${{ secrets.DOCKER_USERNAME }}" ]; then
+          echo "❌ ERROR: DOCKER_USERNAME secret is not set!"
+          echo "Please add DOCKER_USERNAME to repository secrets"
+          exit 1
+        fi
+        if [ -z "${{ secrets.DOCKER_PASSWORD }}" ]; then
+          echo "❌ ERROR: DOCKER_PASSWORD secret is not set!"
+          echo "Please add DOCKER_PASSWORD to repository secrets"
+          exit 1
+        fi
+        echo "✅ Docker secrets are configured"
+      
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      uses: docker/setup-buildx-action@v3
+      with:
+        install: true
       
     - name: Login to Docker Hub
-      uses: docker/login-action@v2
+      uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
@@ -92,20 +108,36 @@ jobs:
         SHA="${{ github.sha }}"
         SHORT_SHA=${SHA:0:7}
         
-        echo "IMAGE_NAME=${DOCKER_USERNAME}/eproject-${SERVICE}" >> $GITHUB_OUTPUT
-        
-        if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-          echo "TAGS=${DOCKER_USERNAME}/eproject-${SERVICE}:latest,${DOCKER_USERNAME}/eproject-${SERVICE}:${BRANCH},${DOCKER_USERNAME}/eproject-${SERVICE}:${BRANCH}-${SHORT_SHA}" >> $GITHUB_OUTPUT
-        else
-          echo "TAGS=${DOCKER_USERNAME}/eproject-${SERVICE}:${BRANCH},${DOCKER_USERNAME}/eproject-${SERVICE}:${BRANCH}-${SHORT_SHA}" >> $GITHUB_OUTPUT
+        # Validate inputs
+        if [ -z "$DOCKER_USERNAME" ]; then
+          echo "❌ ERROR: DOCKER_USERNAME is empty"
+          exit 1
         fi
         
+        echo "🐳 Building for service: $SERVICE"
+        echo "📦 Docker username: $DOCKER_USERNAME"
+        echo "🌿 Branch: $BRANCH"
+        echo "🔖 Short SHA: $SHORT_SHA"
+        
+        IMAGE_NAME="${DOCKER_USERNAME}/eproject-${SERVICE}"
+        echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_OUTPUT
+        
+        if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          TAGS="${IMAGE_NAME}:latest,${IMAGE_NAME}:${BRANCH},${IMAGE_NAME}:${BRANCH}-${SHORT_SHA}"
+        else
+          TAGS="${IMAGE_NAME}:${BRANCH},${IMAGE_NAME}:${BRANCH}-${SHORT_SHA}"
+        fi
+        
+        echo "🏷️ Generated tags: $TAGS"
+        echo "TAGS=${TAGS}" >> $GITHUB_OUTPUT
+        
     - name: Build and push Docker image
-      uses: docker/build-push-action@v4
+      uses: docker/build-push-action@v5
       with:
         context: ./${{ matrix.service }}
         file: ./${{ matrix.service }}/Dockerfile
         push: true
         tags: ${{ steps.tags.outputs.TAGS }}
+        platforms: linux/amd64
         cache-from: type=gha
         cache-to: type=gha,mode=max
