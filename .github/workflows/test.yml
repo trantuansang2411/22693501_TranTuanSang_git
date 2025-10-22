@@ -99,23 +99,6 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         
-    - name: Debug secrets and build info
-      run: |
-        echo "🔍 Debugging information:"
-        echo "📦 Docker username length: ${#DOCKER_USERNAME}"
-        echo "🐳 Service: ${{ matrix.service }}"
-        echo "🌿 Branch: ${{ github.ref_name }}"
-        echo "🔖 SHA: ${{ github.sha }}"
-        
-        if [ -z "$DOCKER_USERNAME" ]; then
-          echo "❌ ERROR: DOCKER_USERNAME is empty or not set"
-          exit 1
-        fi
-        
-        echo "✅ DOCKER_USERNAME is properly set"
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
       with:
@@ -125,7 +108,7 @@ jobs:
         tags: |
           ${{ secrets.DOCKER_USERNAME }}/eproject-${{ matrix.service }}:${{ github.ref_name }}
           ${{ secrets.DOCKER_USERNAME }}/eproject-${{ matrix.service }}:${{ github.ref_name }}-${{ github.sha }}
-          ${{ github.ref == 'refs/heads/main' && format('{0}/eproject-{1}:latest', secrets.DOCKER_USERNAME, matrix.service) || format('{0}/eproject-{1}:dev', secrets.DOCKER_USERNAME, matrix.service) }}
+          ${{ secrets.DOCKER_USERNAME }}/eproject-${{ matrix.service }}:latest
         platforms: linux/amd64
         cache-from: type=gha
         cache-to: type=gha,mode=max
