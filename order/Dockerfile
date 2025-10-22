@@ -1,4 +1,4 @@
-# Product Service Dockerfile
+# Order Service Dockerfile
 FROM node:18-alpine
 
 WORKDIR /app
@@ -13,7 +13,7 @@ RUN npm ci --only=production
 COPY . .
 
 # Expose port
-EXPOSE 3001
+EXPOSE 3002
 
 # Start the service
 CMD ["npm", "start"]
