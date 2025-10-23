@@ -12,14 +12,14 @@ class ProductController {
   async createProduct(req, res) {
     try {
       const product = req.body;
-      
+
       // Input validation
       if (!product.name || !product.price) {
-        return res.status(400).json({ 
-          message: !product.name ? "Product name is required" : "Product price is required" 
+        return res.status(400).json({
+          message: !product.name ? "Product name is required" : "Product price is required"
         });
       }
-      
+
       const result = await this.productService.createProduct(product);
       if (!result.success) {
         return res.status(400).json({ message: result.message });
@@ -44,8 +44,8 @@ class ProductController {
           return res.status(400).json({ message: "Each product must have an id and quantity" });
         }
         //check quantity > 0
-        if(prod.quantity < 1){
-          return res.status(400).json({message: "Product quantity must be > 0"})
+        if (prod.quantity < 1) {
+          return res.status(400).json({ message: "Product quantity must be > 0" })
         }
       }
       const username = req.user.username;
@@ -71,9 +71,9 @@ class ProductController {
     const { id } = req.params;
     console.log("Fetching order with ID:", id);
     const ORDER_SERVICE_URL = process.env.ORDER_SERVICE_URL || 'http://localhost:3002';
-    const response = await axios.get(`${ORDER_SERVICE_URL}/${id}`,{ headers: { Authorization: req.headers.authorization } });
+    const response = await axios.get(`${ORDER_SERVICE_URL}/${id}`, { headers: { Authorization: req.headers.authorization } });
     const order = response.data;
-    if(!order){
+    if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
     return res.status(200).json(order);
@@ -95,16 +95,14 @@ class ProductController {
   async getProductById(req, res) {
     try {
       const { id } = req.params;
-      const product = await this.productService.getProductById(id);
-      if (!product) {
-        return res.status(404).json({ message: "Product not found" });
-      }
-      res.status(200).json(product);
+      const products = await this.productService.getProductById(id);
+      res.status(200).json(products);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Server error" });
     }
   }
+
 
 }
 
