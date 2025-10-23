@@ -46,7 +46,7 @@ jobs:
           echo "MONGODB_AUTH_URI=mongodb://localhost:27017/auth_test" >> auth/.env
 
       # Step 5: Chạy test cho service "auth"
-      # Giả định rằng bạn đã cài đặt "mongodb-memory-server" làm devDependency
+      # Giả định rằng bạn đã cài đặt "mongodb-memory-server" làm devDependencyy
       - name: Run tests for auth
         run: npm test --prefix auth
 
