@@ -91,20 +91,6 @@ class ProductController {
     }
   }
 
-  async getProductById(req, res) {
-    try {
-      const { id } = req.params;
-      const result = await this.productService.getProductById(id);
-      if (!result.success) {
-        return res.status(404).json({ message: result.message });
-      }
-      res.status(200).json(result.product);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Server error" });
-    }
-  }
-
 }
 
 module.exports = ProductController;
