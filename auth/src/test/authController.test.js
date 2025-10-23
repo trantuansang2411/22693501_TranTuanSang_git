@@ -45,7 +45,7 @@ describe("User Authentication", () => {
 
       expect(res).to.have.status(200);
       expect(res.body).to.have.property("token");
-      authToken = res.body.token; // Save token for later tests
+      authToken = res.body.token; // Save token for later test
     });
   });
 
