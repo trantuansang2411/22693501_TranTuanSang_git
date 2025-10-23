@@ -76,7 +76,7 @@ jobs:
         run: npm test --prefix product
 
   build-and-push:
-      needs: test
+      needs: test-auth && test-product
       runs-on: ubuntu-latest
       env:
         DOCKER_USERNAME: 3002tad
