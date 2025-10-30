@@ -74,7 +74,7 @@ class ProductController {
     const response = await axios.get(`${ORDER_SERVICE_URL}/${id}`, { headers: { Authorization: req.headers.authorization } });
     const order = response.data;
     if (!order) {
-      return res.status(404).json({ message: "Order not found" });
+      return res.status(404).json({ message: "Order not found:" });
     }
     return res.status(200).json(order);
   }
