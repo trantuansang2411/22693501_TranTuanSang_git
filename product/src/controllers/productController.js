@@ -96,7 +96,7 @@ class ProductController {
       const {id}=req.params;
       const product = await this.productService.getProductById(id);
       if (!product) {
-        return res.status(404).json({ message: "Not Found" });
+        return res.status(404).json({ message: "Loi" });
       }
       res.status(200).json(product);
     } catch (error) {
