@@ -7,7 +7,7 @@ class ProductController {
     this.getProducts = this.getProducts.bind(this);
     this.createOrder = this.createOrder.bind(this);
     this.getOrderById = this.getOrderById.bind(this);
-    this.getProductById = this.getProductById.bind(this);
+    this.getProductById=this.getProductById.bind(this);
   }
   async createProduct(req, res) {
     try {
@@ -91,19 +91,19 @@ class ProductController {
       res.status(500).json({ message: "Server error" });
     }
   }
-
   async getProductById(req, res) {
     try {
-      const { id } = req.params;
-      const products = await this.productService.getProductById(id);
-      res.status(200).json(products);
+      const {id}=req.params
+      const product = await this.productService.getProductById(id);
+      if (!product) {
+        return res.status(404).json({ message: "Product isn't exit" });
+      }
+      res.status(200).json(product);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Server error" });
     }
   }
-
-
 }
 
 module.exports = ProductController;
