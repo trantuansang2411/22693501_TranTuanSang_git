@@ -93,8 +93,11 @@ class ProductController {
     }
   }
   async getProductById(req,res){
-    const {id}=req.params;
-    const product =await this.productService.getProductById(id);
+    const{id}=req.params;
+    const product = await this.productService.getProductById(id);
+    if (!product) {
+        return res.status(404).json({ message: "Loi" });
+      }
     res.status(200).json(product);
   }
 
