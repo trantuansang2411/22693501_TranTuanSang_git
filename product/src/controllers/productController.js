@@ -89,7 +89,7 @@ class ProductController {
       res.status(200).json(products.products);
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: "Server error" });
+      res.status(500).json({ message: "Server errorr" });
     }
   }
   async getProductById(req,res){
